@@ -1,9 +1,9 @@
+import MainController from './MainController.js';
+
 class App {
-  play() {}
+  play() {
+    new MainController().startProgram();
+  }
 }
-
-const app = new App();
-
-app.play();
 
 export default App;
