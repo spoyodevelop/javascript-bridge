@@ -2,18 +2,36 @@ import InputView from './InputView.js';
 import OutputView from './OutputView.js';
 
 class BridgeGame {
-  move(movement, upBridge, downBridge, currentPos) {
+  move(movement, bridge, currentPos) {
     let isPassed = false;
-    const currUpBridge = upBridge.slice(0, currentPos);
-    const currDownBridge = downBridge.slice(0, currentPos);
-    const currUpBridgeStatus = currUpBridge[currUpBridge.length - 1];
-    const currDownBridgeStatus = currDownBridge[currDownBridge.length - 1];
-    if ((movement === 'U') & (currUpBridgeStatus === 'O')) isPassed = true;
-    if ((movement === 'D') & (currDownBridgeStatus === 'O')) isPassed = true;
-
-    OutputView.printMap(currUpBridge);
-    OutputView.printMap(currDownBridge);
-    return isPassed;
+    let upBridge = '';
+    let downBridge = '';
+    const currentBridge = bridge[currentPos];
+    if (movement === currentBridge) {
+      if (movement === 'U') {
+        upBridge = 'O';
+        downBridge = ' ';
+        isPassed = true;
+      }
+      if (movement === 'D') {
+        downBridge = 'O';
+        upBridge = ' ';
+        isPassed = true;
+      }
+    }
+    if (movement !== currentBridge) {
+      if (movement === 'U') {
+        upBridge = 'X';
+        downBridge = ' ';
+        isPassed = false;
+      }
+      if (movement === 'D') {
+        downBridge = 'X';
+        upBridge = ' ';
+        isPassed = false;
+      }
+    }
+    return { isPassed, upBridge, downBridge };
   }
 
   async retry() {

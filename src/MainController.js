@@ -30,33 +30,66 @@ export default class MainController {
       bridgeLength,
       BridgeRandomNumberGenerator.generate,
     );
-    const { upBridge, downBridge } = makeUpDownBridge(bridge);
+
     const bridgeGame = new BridgeGame();
 
     async function playGame() {
+      const upBridgeList = [];
+      const downBridgeList = [];
+
       for (let i = 1; i < bridgeLength + 1; i++) {
         const movement = await InputView.readMoving();
-        const isPassed = bridgeGame.move(movement, upBridge, downBridge, i);
-        if (!isPassed) return false;
+
+        const { isPassed, upBridge, downBridge } = bridgeGame.move(
+          movement,
+          bridge,
+          i,
+        );
+        upBridgeList.push(upBridge);
+        downBridgeList.push(downBridge);
+        OutputView.printMap(upBridgeList);
+        OutputView.printMap(downBridgeList);
+        if (!isPassed) break;
       }
-      return true;
+      const isPassed = upBridgeList.length === bridgeLength;
+      return { isPassed, upBridgeList, downBridgeList };
     }
+
     async function playGames() {
-      let didWin = false;
+      let isPassedFinal = false;
+      let upBridgeListForDisplay = [];
+      let downBridgeListForDisplay = [];
       let playCount = 0;
       while (true) {
-        didWin = await playGame();
+        const { isPassed, upBridgeList, downBridgeList } = await playGame();
+        console.log();
+        isPassedFinal = isPassed;
+        upBridgeListForDisplay = upBridgeList;
+        downBridgeListForDisplay = downBridgeList;
         playCount++;
-        if (!didWin) {
+        if (!isPassed) {
           const retry = await bridgeGame.retry();
 
           if (!retry) break;
         }
-        if (didWin) break;
+        if (isPassed) break;
       }
 
-      return { didWin, playCount };
+      return {
+        isPassedFinal,
+        playCount,
+        upBridgeListForDisplay,
+        downBridgeListForDisplay,
+      };
     }
-    const { didWin, playCount } = await playGames();
+
+    const {
+      isPassedFinal,
+      playCount,
+      upBridgeListForDisplay,
+      downBridgeListForDisplay,
+    } = await playGames();
+
+    OutputView.printResult(upBridgeListForDisplay, downBridgeListForDisplay);
   }
 }

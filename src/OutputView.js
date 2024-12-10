@@ -8,7 +8,11 @@ const OutputView = {
     Console.print(`[ ${bridge.join(' | ')} ]`);
   },
 
-  printResult() {},
+  printResult(upBridge, downBridge) {
+    Console.print('최종 게임 결과');
+    Console.print(`[ ${upBridge.join(' | ')} ]`);
+    Console.print(`[ ${downBridge.join(' | ')} ]`);
+  },
 };
 
 export default OutputView;
