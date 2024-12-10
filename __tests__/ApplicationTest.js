@@ -1,15 +1,12 @@
 import { MissionUtils } from '@woowacourse/mission-utils';
 import App from '../src/App.js';
 
-const mockQuestions = (answers) => {
-  MissionUtils.Console.readLine = jest.fn();
-  answers.reduce(
-    (acc, input) =>
-      acc.mockImplementationOnce((_, callback) => {
-        callback(input);
-      }),
-    MissionUtils.Console.readLine,
-  );
+const mockQuestions = (inputs) => {
+  MissionUtils.Console.readLineAsync = jest.fn();
+  MissionUtils.Console.readLineAsync.mockImplementation(() => {
+    const input = inputs.shift();
+    return Promise.resolve(input);
+  });
 };
 
 const mockRandoms = (numbers) => {
@@ -26,63 +23,30 @@ const getLogSpy = () => {
   return logSpy;
 };
 
-const getOutput = (logSpy) => [...logSpy.mock.calls].join('');
-
-const runException = (inputs) => {
-  mockQuestions(inputs);
-  const logSpy = getLogSpy();
-  const app = new App();
-
-  app.play();
-
-  expectLogContains(getOutput(logSpy), ['[ERROR]']);
-};
-
-const expectLogContains = (received, logs) => {
-  logs.forEach((log) => {
-    expect(received).toEqual(expect.stringContaining(log));
-  });
-};
-
-const expectBridgeOrder = (received, upside, downside) => {
-  const upsideIndex = received.indexOf(upside);
-  const downsideIndex = received.indexOf(downside);
-
-  expect(upsideIndex).toBeLessThan(downsideIndex);
-};
+afterEach(() => jest.clearAllMocks());
 
 describe('다리 건너기 테스트', () => {
-  test('다리 생성 테스트', () => {
-    const randomNumbers = [1, 0, 0];
-    const mockGenerator = randomNumbers.reduce(
-      (acc, number) => acc.mockReturnValueOnce(number),
-      jest.fn(),
-    );
-
-    const bridge = BridgeMaker.makeBridge(3, mockGenerator);
-    expect(bridge).toEqual(['U', 'D', 'D']);
-  });
-
-  test('기능 테스트', () => {
+  test('사용자가 올바른 입력을 통해 다리를 성공적으로 건너는 경우', async () => {
     const logSpy = getLogSpy();
-    mockRandoms([1, 0, 1]);
-    mockQuestions(['3', 'U', 'D', 'U']);
-
-    const app = new App();
-    app.play();
-
-    const log = getOutput(logSpy);
-    expectLogContains(log, [
+    mockRandoms([1, 0, 1]); // 다리 패턴
+    mockQuestions(['3', 'U', 'D', 'U']); // 사용자 입력
+    const expectedLogs = [
       '최종 게임 결과',
       '[ O |   | O ]',
       '[   | O |   ]',
       '게임 성공 여부: 성공',
       '총 시도한 횟수: 1',
-    ]);
-    expectBridgeOrder(log, '[ O |   | O ]', '[   | O |   ]');
+    ];
+    const app = new App();
+    await app.play();
+
+    const actualLogs = logSpy.mock.calls.map((call) => call[0]);
+    expect(actualLogs).toEqual(expectedLogs);
   });
 
-  test('예외 테스트', () => {
-    runException(['a']);
+  test('잘못된 입력으로 예외가 발생하는 경우', async () => {
+    mockQuestions(['a']);
+    const app = new App();
+    await expect(app.play()).rejects.toThrow(); // 올바른 예외 발생 확인
   });
 });

@@ -23,21 +23,21 @@ export default class MainController {
 
       return { upBridge, downBridge };
     }
-
+    OutputView.printIntro();
     const bridgeLength = await InputView.readBridgeSize();
 
     const bridge = BridgeMaker.makeBridge(
       bridgeLength,
       BridgeRandomNumberGenerator.generate,
     );
-
+    console.log(bridge);
     const bridgeGame = new BridgeGame();
 
     async function playGame() {
       const upBridgeList = [];
       const downBridgeList = [];
 
-      for (let i = 1; i < bridgeLength + 1; i++) {
+      for (let i = 0; i < bridgeLength; i++) {
         const movement = await InputView.readMoving();
 
         const { isPassed, upBridge, downBridge } = bridgeGame.move(
@@ -90,6 +90,11 @@ export default class MainController {
       downBridgeListForDisplay,
     } = await playGames();
 
-    OutputView.printResult(upBridgeListForDisplay, downBridgeListForDisplay);
+    OutputView.printResult(
+      isPassedFinal,
+      playCount,
+      upBridgeListForDisplay,
+      downBridgeListForDisplay,
+    );
   }
 }
