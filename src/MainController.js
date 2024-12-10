@@ -2,6 +2,8 @@ import InputView from './InputView.js';
 
 export default class MainController {
   async startProgram() {
+
+    const b
     // const bridgeLength = await InputView.getBridgeLengthFromUser();
     // const movement = await InputView.getMovementFromUser();
     // const retry = await InputView.getRetryFromUser();
