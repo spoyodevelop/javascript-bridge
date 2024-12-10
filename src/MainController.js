@@ -1,6 +1,7 @@
 import BridgeMaker from './BridgeMaker.js';
 import BridgeRandomNumberGenerator from './BridgeRandomNumberGenerator.js';
 import InputView from './InputView.js';
+import OutputView from './OutputView.js';
 
 export default class MainController {
   async startProgram() {
@@ -22,12 +23,22 @@ export default class MainController {
     }
 
     const bridgeLength = await InputView.readBridgeSize();
-    // const movement = await InputView.readMoving();
+
     // const retry = await InputView.readGameCommand();
 
     const bridge = BridgeMaker.makeBridge(
       bridgeLength,
       BridgeRandomNumberGenerator.generate,
     );
+    const { upBridge, downBridge } = makeUpDownBridge(bridge);
+
+    for (let i = 1; i < bridgeLength + 1; i++) {
+      const movement = await InputView.readMoving();
+      const currUpBridge = upBridge.slice(0, i);
+      const currDownBridge = downBridge.slice(0, i);
+
+      OutputView.printMap(currUpBridge);
+      OutputView.printMap(currDownBridge);
+    }
   }
 }
