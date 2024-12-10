@@ -49,7 +49,9 @@ export default class MainController {
         downBridgeList.push(downBridge);
         OutputView.printMap(upBridgeList);
         OutputView.printMap(downBridgeList);
-        if (!isPassed) break;
+        if (!isPassed) {
+          return { isPassed, upBridgeList, downBridgeList };
+        }
       }
       const isPassed = upBridgeList.length === bridgeLength;
       return { isPassed, upBridgeList, downBridgeList };

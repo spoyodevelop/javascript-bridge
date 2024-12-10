@@ -32,6 +32,7 @@ class BridgeGame {
         isPassed = false;
       }
     }
+    console.log(upBridge, downBridge);
     return { isPassed, upBridge, downBridge };
   }
 

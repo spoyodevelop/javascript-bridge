@@ -1,7 +1,7 @@
 import MainController from './MainController.js';
 
 class App {
-  play() {
+  async play() {
     new MainController().startProgram();
   }
 }
