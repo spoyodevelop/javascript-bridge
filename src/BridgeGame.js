@@ -7,7 +7,7 @@ class BridgeGame {
     let upBridge = '';
     let downBridge = '';
     const currentBridge = bridge[currentPos];
-    console.log(currentBridge);
+    // console.log(currentBridge);
     if (movement === currentBridge) {
       if (movement === 'U') {
         upBridge = 'O';
@@ -32,7 +32,7 @@ class BridgeGame {
         isPassed = false;
       }
     }
-    console.log(upBridge, downBridge);
+    // csonsole.log(upBridge, downBridge);
     return { isPassed, upBridge, downBridge };
   }
 
