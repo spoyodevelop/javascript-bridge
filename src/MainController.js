@@ -1,3 +1,4 @@
+import { Console } from '@woowacourse/mission-utils';
 import BridgeGame from './BridgeGame.js';
 import BridgeMaker from './BridgeMaker.js';
 import BridgeRandomNumberGenerator from './BridgeRandomNumberGenerator.js';
@@ -25,8 +26,6 @@ export default class MainController {
 
     const bridgeLength = await InputView.readBridgeSize();
 
-    // const retry = await InputView.readGameCommand();
-
     const bridge = BridgeMaker.makeBridge(
       bridgeLength,
       BridgeRandomNumberGenerator.generate,
@@ -35,13 +34,29 @@ export default class MainController {
     const bridgeGame = new BridgeGame();
 
     async function playGame() {
-      let isPassed = true;
       for (let i = 1; i < bridgeLength + 1; i++) {
         const movement = await InputView.readMoving();
-        isPassed = bridgeGame.move(movement, upBridge, downBridge, i);
-        if (!isPassed) break;
+        const isPassed = bridgeGame.move(movement, upBridge, downBridge, i);
+        if (!isPassed) return false;
       }
-      if (!isPassed) return isPassed;
+      return true;
     }
+    async function playGames() {
+      let didWin = false;
+      let playCount = 0;
+      while (true) {
+        didWin = await playGame();
+        playCount++;
+        if (!didWin) {
+          const retry = await bridgeGame.retry();
+
+          if (!retry) break;
+        }
+        if (didWin) break;
+      }
+
+      return { didWin, playCount };
+    }
+    const { didWin, playCount } = await playGames();
   }
 }

@@ -1,3 +1,4 @@
+import InputView from './InputView.js';
 import OutputView from './OutputView.js';
 
 class BridgeGame {
@@ -15,6 +16,13 @@ class BridgeGame {
     return isPassed;
   }
 
-  retry() {}
+  async retry() {
+    const retryInput = await InputView.readGameCommand();
+    if (retryInput === 'R') {
+      return true;
+    }
+
+    if (retryInput === 'Q') return false;
+  }
 }
 export default BridgeGame;
