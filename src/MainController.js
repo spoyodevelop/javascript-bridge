@@ -1,12 +1,11 @@
+import BridgeRandomNumberGenerator from './BridgeRandomNumberGenerator.js';
 import InputView from './InputView.js';
 
 export default class MainController {
   async startProgram() {
-
-    const b
-    // const bridgeLength = await InputView.getBridgeLengthFromUser();
-    // const movement = await InputView.getMovementFromUser();
-    // const retry = await InputView.getRetryFromUser();
-    // console.log(retry);
+    // const bridgeLength = await InputView.readBridgeSize();
+    // const movement = await InputView.readMoving();
+    // const retry = await InputView.readGameCommand();
+    console.log(BridgeRandomNumberGenerator.generate());
   }
 }
