@@ -12,5 +12,17 @@ export default class MainController {
       bridgeLength,
       BridgeRandomNumberGenerator.generate,
     );
+    const upBridge = [];
+    const downBridge = [];
+    bridge.forEach((place) => {
+      if (place === 'U') {
+        upBridge.push('O');
+        downBridge.push('X');
+      }
+      if (place === 'D') {
+        downBridge.push('O');
+        upBridge.push('X');
+      }
+    });
   }
 }
