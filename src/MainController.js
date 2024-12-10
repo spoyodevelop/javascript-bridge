@@ -1,3 +1,4 @@
+import BridgeGame from './BridgeGame.js';
 import BridgeMaker from './BridgeMaker.js';
 import BridgeRandomNumberGenerator from './BridgeRandomNumberGenerator.js';
 import InputView from './InputView.js';
@@ -31,14 +32,16 @@ export default class MainController {
       BridgeRandomNumberGenerator.generate,
     );
     const { upBridge, downBridge } = makeUpDownBridge(bridge);
+    const bridgeGame = new BridgeGame();
 
-    for (let i = 1; i < bridgeLength + 1; i++) {
-      const movement = await InputView.readMoving();
-      const currUpBridge = upBridge.slice(0, i);
-      const currDownBridge = downBridge.slice(0, i);
-
-      OutputView.printMap(currUpBridge);
-      OutputView.printMap(currDownBridge);
+    async function playGame() {
+      let isPassed = true;
+      for (let i = 1; i < bridgeLength + 1; i++) {
+        const movement = await InputView.readMoving();
+        isPassed = bridgeGame.move(movement, upBridge, downBridge, i);
+        if (!isPassed) break;
+      }
+      if (!isPassed) return isPassed;
     }
   }
 }
